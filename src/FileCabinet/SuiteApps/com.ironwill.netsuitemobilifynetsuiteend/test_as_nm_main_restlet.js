@@ -10,29 +10,27 @@ define(["N/record", "N/search", "./test_as_nm_record_metadata"], (
 ) => {
   function normalizeColumns(fields) {
     if (!fields) {
-      return ["internalid"];
+      return [{ id: "internalid", column: search.createColumn({ name: "internalid" }) }];
     }
 
     if (typeof fields === "string") {
       return fields
         .split(",")
         .map((field) => field.trim())
-        .filter(Boolean);
+        .filter(Boolean)
+        .map((id) => ({ id, column: search.createColumn({ name: id }) }));
     }
 
     if (Array.isArray(fields)) {
       return fields
         .map((field) => {
-          if (typeof field === "string") {
-            return field;
-          }
-
-          return field.id || field.name;
+          const id = typeof field === "string" ? field : field.id || field.name;
+          return id ? { id, column: search.createColumn({ name: id }) } : null;
         })
-        .filter(Boolean);
+        .filter((field) => field !== null);
     }
 
-    return ["internalid"];
+    return [{ id: "internalid", column: search.createColumn({ name: "internalid" }) }];
   }
 
   function buildFilters(context) {
@@ -83,11 +81,31 @@ define(["N/record", "N/search", "./test_as_nm_record_metadata"], (
       recordType: result.recordType,
     };
 
-    columns.forEach((columnName) => {
-      row[columnName] = {
-        value: result.getValue({ name: columnName }),
-        text: result.getText({ name: columnName }),
-      };
+    columns.forEach(({ id, column }) => {
+      let value = null;
+      let text = null;
+
+      try {
+        value = result.getValue(column);
+      } catch (error) {
+        try {
+          value = result.getValue({ name: id });
+        } catch (fallbackError) {
+          log.debug({ title: "Unable to read search value", details: { id, error: fallbackError } });
+        }
+      }
+
+      try {
+        text = result.getText(column);
+      } catch (error) {
+        try {
+          text = result.getText({ name: id });
+        } catch (fallbackError) {
+          // getText is not supported for every field type; the raw value is enough.
+        }
+      }
+
+      row[id] = { value, text };
     });
 
     return row;
@@ -114,7 +132,7 @@ define(["N/record", "N/search", "./test_as_nm_record_metadata"], (
       .create({
         type: recordType,
         filters: buildFilters(context),
-        columns,
+        columns: columns.map(({ column }) => column),
       })
       .run()
       .getRange({
@@ -128,7 +146,7 @@ define(["N/record", "N/search", "./test_as_nm_record_metadata"], (
       recordType,
       filteredBy: context.filteredBy || context.filterBy || null,
       filterValue: context.filterValue || context.filteredByValue || null,
-      fields: columns,
+      fields: columns.map(({ id }) => id),
       pageIndex,
       pageSize,
       results: searchResults.map((result) => readSearchResult(result, columns)),
