@@ -201,6 +201,7 @@ define(["N/record", "N/search", "./test_as_nm_record_metadata"], (
   function createFunctionRecord(context) {
     const recordType = context.recordType;
     const values = context.values || context.fields;
+    const fieldTypes = context.fieldTypes || {};
 
     if (!recordType) {
       return {
@@ -222,9 +223,29 @@ define(["N/record", "N/search", "./test_as_nm_record_metadata"], (
     });
 
     Object.keys(values).forEach((fieldId) => {
+      const type = String(fieldTypes[fieldId] || "").toLowerCase();
+      let value = values[fieldId];
+
+      if (["checkbox", "boolean"].includes(type)) {
+        value = value === true || value === "true" || value === "T";
+      } else if (["integer", "number", "currency", "float", "percent"].includes(type)) {
+        value = Number(value);
+        if (!Number.isFinite(value)) {
+          throw new Error(`Invalid number for field ${fieldId}`);
+        }
+      } else if (type === "date") {
+        value = value instanceof Date ? value : new Date(value);
+        if (Number.isNaN(value.getTime())) {
+          throw new Error(`Invalid date for field ${fieldId}`);
+        }
+      } else if (type === "select" && value !== "" && value !== null) {
+        const numericValue = Number(value);
+        value = Number.isNaN(numericValue) ? value : numericValue;
+      }
+
       newRecord.setValue({
         fieldId,
-        value: values[fieldId],
+        value,
       });
     });
 
