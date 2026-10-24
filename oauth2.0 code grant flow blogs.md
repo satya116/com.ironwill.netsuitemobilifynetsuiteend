@@ -1,0 +1,2 @@
+# SAMPLE redirect url from STEP 1
+http://localhost:5000/oauth2?state=ykv2XLx1BpT5Q0F3MRPHb94j&role=3&entity=37554&company=TSTDRV1395241&code=73d364c10dee7e09382ecd9794a8892cf9832e5abab5ef40a6d0688586e5a4a7

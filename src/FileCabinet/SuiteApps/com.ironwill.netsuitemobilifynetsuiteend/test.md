@@ -1,0 +1,11 @@
+https://tstdrv1395241.app.netsuite.com/app/common/integration/integrapp.nl?id=147&whence=
+
+
+tstdrv1395241
+
+Consumer Key - f39586b50d74b0ec6665128f16a6ec471e3c0a1953eda664cec7070e49fa10d0
+Consumer Secret - fbf66efb766c71fd769ae5ebb5e3eaedd5f2e2fb3272756a0828e8aff294a4e5
+
+
+Token ID - 5e8dfb19236bac58b79ce4196cd14c8d2c6e9fa298fabd29051bc43043fbdffb
+Token Secret - f7ae3067e553a87df77544192ede0637463f5ce2b6c12102f4dcce27b538cf65
