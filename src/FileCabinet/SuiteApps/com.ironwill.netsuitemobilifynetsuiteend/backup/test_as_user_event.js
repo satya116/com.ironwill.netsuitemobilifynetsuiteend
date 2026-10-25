@@ -12,6 +12,11 @@ define(["N/ui/serverWidget"], (serverWidget) => {
       lname: "john",
     };
 
+
+    // functionName: `dhgfehdfjf(${JSON.stringify(helloword)})`
+    
+
+
     form.addButton({
       id: "custpage_test_as_btn",
       label: "Test Button",

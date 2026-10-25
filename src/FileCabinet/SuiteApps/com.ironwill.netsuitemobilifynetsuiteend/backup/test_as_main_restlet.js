@@ -61,8 +61,6 @@ define(["N/record", "N/search", "N/query", "N/https", "N/runtime"], (
     });
 
     // log.debug({});
-
-
   }
   function _put() {}
   function _delete() {}
