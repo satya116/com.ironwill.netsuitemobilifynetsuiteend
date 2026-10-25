@@ -10,7 +10,12 @@ define(["N/record", "N/search", "./test_as_nm_record_metadata"], (
 ) => {
   function normalizeColumns(fields) {
     if (!fields) {
-      return [{ id: "internalid", column: search.createColumn({ name: "internalid" }) }];
+      return [
+        {
+          id: "internalid",
+          column: search.createColumn({ name: "internalid" }),
+        },
+      ];
     }
 
     if (typeof fields === "string") {
@@ -30,7 +35,9 @@ define(["N/record", "N/search", "./test_as_nm_record_metadata"], (
         .filter((field) => field !== null);
     }
 
-    return [{ id: "internalid", column: search.createColumn({ name: "internalid" }) }];
+    return [
+      { id: "internalid", column: search.createColumn({ name: "internalid" }) },
+    ];
   }
 
   function buildFilters(context) {
@@ -91,7 +98,10 @@ define(["N/record", "N/search", "./test_as_nm_record_metadata"], (
         try {
           value = result.getValue({ name: id });
         } catch (fallbackError) {
-          log.debug({ title: "Unable to read search value", details: { id, error: fallbackError } });
+          log.debug({
+            title: "Unable to read search value",
+            details: { id, error: fallbackError },
+          });
         }
       }
 
@@ -228,7 +238,9 @@ define(["N/record", "N/search", "./test_as_nm_record_metadata"], (
 
       if (["checkbox", "boolean"].includes(type)) {
         value = value === true || value === "true" || value === "T";
-      } else if (["integer", "number", "currency", "float", "percent"].includes(type)) {
+      } else if (
+        ["integer", "number", "currency", "float", "percent"].includes(type)
+      ) {
         value = Number(value);
         if (!Number.isFinite(value)) {
           throw new Error(`Invalid number for field ${fieldId}`);
